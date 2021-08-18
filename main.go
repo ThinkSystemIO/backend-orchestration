@@ -4,10 +4,10 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/adamavix/thinksystem/package/kubefactory"
-	"github.com/adamavix/thinksystem/package/response"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	"github.com/thinksystemio/package/kubefactory"
+	"github.com/thinksystemio/package/response"
 )
 
 var (

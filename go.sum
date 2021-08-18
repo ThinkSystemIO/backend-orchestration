@@ -43,10 +43,6 @@ github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym
 github.com/NYTimes/gziphandler v0.0.0-20170623195520-56545f4a5d46/go.mod h1:3wb06e3pkSAbeQ52E9H9iFoQsEEwGN64994WTCIhntQ=
 github.com/PuerkitoBio/purell v1.1.1/go.mod h1:c11w/QuzBsJSee3cPx9rAFu61PvFxuPbtSwDGJws/X0=
 github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578/go.mod h1:uGdkoq3SwY9Y+13GIhn11/XLaGBb4BfwItxLd5jeuXE=
-github.com/adamavix/thinksystem/package/kubefactory v0.0.0-20210529195042-bd95486be9dc h1:8QysP8LEZ6mooeNAz7mvm7GSrPL86rSLt7lnq4DOEhU=
-github.com/adamavix/thinksystem/package/kubefactory v0.0.0-20210529195042-bd95486be9dc/go.mod h1:f/a22prMlbPK7BWThcOI9RIQKylNLlcgol5tzwkMgN0=
-github.com/adamavix/thinksystem/package/response v0.0.0-20210529195042-bd95486be9dc h1:Fe9GzZZzQbKErCmt5rnqZuy3kvONnkSX3Nz/2pjEDk4=
-github.com/adamavix/thinksystem/package/response v0.0.0-20210529195042-bd95486be9dc/go.mod h1:Xt5qGV6l1EnMqaJJ8EHGf0dNCEFUDAhePwzlzurJs9w=
 github.com/asaskevich/govalidator v0.0.0-20190424111038-f61b66f89f4a/go.mod h1:lB+ZfQJz7igIIfQNfa7Ml4HSf2uFQQRzpGGRXenZAgY=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
 github.com/chzyer/logex v1.1.10/go.mod h1:+Ywpsq7O8HXn0nuIou7OrIPyXbp3wmkHB+jjWRnGsAI=
@@ -206,6 +202,10 @@ github.com/stretchr/testify v1.4.0/go.mod h1:j7eGeouHqKxXV5pUuKE4zz7dFj8WfuZ+81P
 github.com/stretchr/testify v1.5.1/go.mod h1:5W2xD1RspED5o8YsWQXVCued0rvSQ+mT+I5cxcmMvtA=
 github.com/stretchr/testify v1.6.1 h1:hDPOHmpOpP40lSULcqw7IrRb/u7w6RpDC9399XyoNd0=
 github.com/stretchr/testify v1.6.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
+github.com/thinksystemio/package/kubefactory v0.0.0-20210818045430-eceb5266c19f h1:8mqaBTbNFPOrte41nvyK8Re476An8gUViiC0tgEYYHk=
+github.com/thinksystemio/package/kubefactory v0.0.0-20210818045430-eceb5266c19f/go.mod h1:sbtuMlRqbG+663LtBcVvUh1Gu6EcXZvmq9a2rmSnJCc=
+github.com/thinksystemio/package/response v0.0.0-20210818045430-eceb5266c19f h1:ErQlNp5z74Y9SBUAW6cUsUiHd+w1KgPIxL1uW6CQh/c=
+github.com/thinksystemio/package/response v0.0.0-20210818045430-eceb5266c19f/go.mod h1:NGBXtFjnMGRWojtZS6v3D0OmZ7KmWvaXrXdckLB4A4U=
 github.com/yuin/goldmark v1.1.25/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.32/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=

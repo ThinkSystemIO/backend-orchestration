@@ -8,7 +8,7 @@ steps:
         "PAT=${_PAT}",
         "-t",
         "gcr.io/$PROJECT_ID/backend-orchestration",
-        "./backend/orchestration"
+        ".",
       ]
   # Push the container image to Container Registry
   - name: "gcr.io/cloud-builders/docker"
