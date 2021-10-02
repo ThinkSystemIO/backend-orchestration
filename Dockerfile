@@ -29,6 +29,9 @@ RUN go build -o main .
 # Create final container to hide history
 FROM golang:alpine
 
+# Download helm
+RUN apk add helm
+
 # Move to /dist directory as the place for resulting binary folder
 WORKDIR /dist
 

@@ -1,131 +1,61 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"os/exec"
+	"strings"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
-	"github.com/thinksystemio/package/kubefactory"
-	"github.com/thinksystemio/package/response"
 )
 
-var (
-	client = kubefactory.NewKubeClient("gcr.io", "thinksystem")
-)
+func init() {
+	setEnv("_ENV", "thinksystem")
+	setEnv("PROJECT_ID", "thinksystem")
+	setEnv("CLOUDSDK_COMPUTE_ZONE", "us-central1-c")
+	setEnv("CLOUDSDK_CONTAINER_CLUSTER", "thinksystemio")
+	setEnv("KUBECONFIG", "/workspace/.kube/config")
+	setEnv("TILLERLESS", "true")
+}
 
 func main() {
-	log.Println("starting")
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 
-	r.Get("/*", NotFound)
-	r.Get("/{clusterName}", DeployCluster)
-	r.Get("/{clusterName}/{appType}/{appName}/{appPort}", DeployLocalApp)
-	r.Get("/{clusterName}/{appType}/{appName}/{appPort}/{image}/{imageName}", DeployRemoteApp)
+	r.Get("/", deploy)
 
-	http.ListenAndServe(":81", r)
+	http.ListenAndServe(":80", r)
 }
 
-// NotFound redirects to the not found page
-func NotFound(w http.ResponseWriter, r *http.Request) {
-	response := response.CreateResponse()
-	response.SendDataWithStatusCode(w, "not found", http.StatusNotFound)
+func deploy(w http.ResponseWriter, r *http.Request) {
+	execCmd("echo {$_KEY} | helm registry login -u _json_key_base64 --password-stdin https://us-central1-docker.pkg.dev")
+	execCmd("helm chart pull us-central1-docker.pkg.dev/${PROJECT_ID}/repo/deploy:0.1.0")
+	execCmd("helm chart export us-central1-docker.pkg.dev/${PROJECT_ID}/repo/deploy:0.1.0")
+	execCmd("helm upgrade --install thinksystemio-${_ENV} thinksystemio -n ${_ENV} -f thinksystemio/values-${_ENV}.yaml")
 }
 
-func DeployCluster(w http.ResponseWriter, r *http.Request) {
-	name := chi.URLParam(r, "clusterName")
-	response := response.CreateResponse()
-	log.Println(name)
+func setEnv(key, value string) {
+	log.Printf("setting env variable with key %s and value %s", key, value)
 
-	configs := createDefaultConfigs(response, name)
-
-	for _, config := range configs {
-		err := client.Deploy(config)
-		if err != nil {
-			log.Println(err)
-			response.SendErrorWithStatusCode(w, err, http.StatusInternalServerError)
-			return
-		}
-	}
-
-	response.SendWithStatusCode(w, http.StatusAccepted)
+	handleError(os.Setenv(key, value))
 }
 
-func createDefaultConfigs(response *response.Response, clusterName string) []*kubefactory.KubeConfig {
-	configs := []*kubefactory.KubeConfig{}
+func execCmd(command string) {
+	log.Printf("executing command %s", command)
 
-	mongo, err := client.NewKubeConfig(clusterName, "database", "mongo", "27017", "mongo", "mongo")
-	if err != nil {
-		log.Println(err)
-		response.AppendError(err)
-		return configs
-	}
-	configs = append(configs, mongo)
+	fields := strings.Fields(command)
+	cmd := exec.Command(fields[0], fields[1:]...)
+	stdoutStderr, err := cmd.CombinedOutput()
 
-	flow, err := client.NewKubeConfig(clusterName, "backend", "flow", "81", "", "")
-	if err != nil {
-		log.Println(err)
-		response.AppendError(err)
-		return configs
-	}
-	configs = append(configs, flow)
-
-	dashboard, err := client.NewKubeConfig(clusterName, "frontend", "dashboard", "80", "", "")
-	if err != nil {
-		log.Println(err)
-		response.AppendError(err)
-		return configs
-	}
-	configs = append(configs, dashboard)
-
-	return configs
+	fmt.Printf("%s\n", stdoutStderr)
+	handleError(err)
 }
 
-func DeployLocalApp(w http.ResponseWriter, r *http.Request) {
-	response := response.CreateResponse()
-	clusterName := chi.URLParam(r, "clusterName")
-	appType := chi.URLParam(r, "appType")
-	appName := chi.URLParam(r, "appName")
-	appPort := chi.URLParam(r, "appPort")
-
-	config, err := client.NewKubeConfig(clusterName, appType, appName, appPort, "", "")
+func handleError(err error) {
 	if err != nil {
-		log.Println(err)
-		response.SendErrorWithStatusCode(w, err, http.StatusInternalServerError)
-		return
+		log.Fatalln(err)
 	}
-
-	if err := client.Deploy(config); err != nil {
-		log.Println(err)
-		response.SendErrorWithStatusCode(w, err, http.StatusInternalServerError)
-		return
-	}
-
-	response.SendWithStatusCode(w, http.StatusAccepted)
-}
-
-func DeployRemoteApp(w http.ResponseWriter, r *http.Request) {
-	response := response.CreateResponse()
-	clusterName := chi.URLParam(r, "clusterName")
-	appType := chi.URLParam(r, "appType")
-	appName := chi.URLParam(r, "appName")
-	appPort := chi.URLParam(r, "appPort")
-	image := chi.URLParam(r, "image")
-	imageName := chi.URLParam(r, "imageName")
-
-	config, err := client.NewKubeConfig(clusterName, appType, appName, appPort, image, imageName)
-	if err != nil {
-		log.Println(err)
-		response.SendErrorWithStatusCode(w, err, http.StatusInternalServerError)
-		return
-	}
-
-	if err := client.Deploy(config); err != nil {
-		log.Println(err)
-		response.SendErrorWithStatusCode(w, err, http.StatusInternalServerError)
-		return
-	}
-
-	response.SendWithStatusCode(w, http.StatusAccepted)
 }
