@@ -1,9 +1,12 @@
 FROM golang:alpine as build
 
-# Download and use git
+# Inject env vars
 ARG PAT
+ARG KEY
+
+# Download and use git
 RUN apk add git
-RUN git config --global url.https://${PAT}:@github.com/.insteadOf https://github.com/
+RUN git config --global url.https://${_PAT}:@github.com/.insteadOf https://github.com/
 
 # Set necessary env variables needed for our image
 ENV GO111MODULE=on \
@@ -31,6 +34,8 @@ FROM golang:alpine
 
 # Download helm
 RUN apk add helm
+RUN curl -sSL https://sdk.cloud.google.com | bash
+RUN gcloud auth activate-service-account --key-file=${KEY}
 
 # Move to /dist directory as the place for resulting binary folder
 WORKDIR /dist

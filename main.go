@@ -4,22 +4,12 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 	"os/exec"
 	"strings"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 )
-
-func init() {
-	setEnv("_ENV", "thinksystem")
-	setEnv("PROJECT_ID", "thinksystem")
-	setEnv("CLOUDSDK_COMPUTE_ZONE", "us-central1-c")
-	setEnv("CLOUDSDK_CONTAINER_CLUSTER", "thinksystemio")
-	setEnv("KUBECONFIG", "/workspace/.kube/config")
-	setEnv("TILLERLESS", "true")
-}
 
 func main() {
 	r := chi.NewRouter()
@@ -35,12 +25,6 @@ func deploy(w http.ResponseWriter, r *http.Request) {
 	execCmd("helm chart pull us-central1-docker.pkg.dev/${PROJECT_ID}/repo/deploy:0.1.0")
 	execCmd("helm chart export us-central1-docker.pkg.dev/${PROJECT_ID}/repo/deploy:0.1.0")
 	execCmd("helm upgrade --install thinksystemio-${_ENV} thinksystemio -n ${_ENV} -f thinksystemio/values-${_ENV}.yaml")
-}
-
-func setEnv(key, value string) {
-	log.Printf("setting env variable with key %s and value %s", key, value)
-
-	handleError(os.Setenv(key, value))
 }
 
 func execCmd(command string) {
