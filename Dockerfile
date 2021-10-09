@@ -41,15 +41,18 @@ WORKDIR /dist
 # Decode key to json file
 RUN echo ${KEY} | base64 -d > /dist/auth.json
 
-# Install packages
+
+# Add packages
 RUN apk update
-# RUN apk add helm
 RUN apk add bash
 RUN apk add curl
+RUN apk add openssl
 RUN apk add python3
-# RUN apk add py3-pip
-# RUN apk add gcc musl-dev python3-dev libffi-dev openssl-dev cargo
-# RUN pip3 install cryptography
+
+# Install helm
+RUN curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+RUN chmod 700 get_helm.sh
+RUN bash ./get_helm.sh
 
 # Install gcloud client
 RUN curl https://sdk.cloud.google.com > install.sh
