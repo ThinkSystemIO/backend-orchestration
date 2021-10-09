@@ -42,8 +42,10 @@ WORKDIR /dist
 RUN echo ${KEY} | base64 -d > /dist/auth.json
 
 
-# Add packages
+# Update packages
 RUN apk update
+
+# Add packages
 RUN apk add bash
 RUN apk add curl
 RUN apk add openssl

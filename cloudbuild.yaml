@@ -37,8 +37,8 @@ steps:
       - "-c"
       - |
       - echo {$_KEY} | helm registry login -u _json_key_base64 --password-stdin https://us-central1-docker.pkg.dev
-      - helm chart pull us-central1-docker.pkg.dev/${PROJECT_ID}/repo/deploy:0.1.0
-      - helm chart export us-central1-docker.pkg.dev/${PROJECT_ID}/repo/deploy:0.1.0
+      - helm chart pull us-central1-docker.pkg.dev/${PROJECT_ID}/images/helm-ingress:0.1.0
+      - helm chart export us-central1-docker.pkg.dev/${PROJECT_ID}/images/helm-ingress:0.1.0
       - helm upgrade --install thinksystemio-${_ENV} thinksystemio -n ${_ENV} -f thinksystemio/values-${_ENV}.yaml
     env:
       - CLOUDSDK_COMPUTE_ZONE=us-central1-c
