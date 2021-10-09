@@ -2,7 +2,6 @@ FROM golang:alpine as build
 
 # Inject env vars
 ARG PAT
-ARG KEY
 
 # Download and use git
 RUN apk add git
@@ -32,13 +31,30 @@ RUN go build -o main .
 # Create final container to hide history
 FROM golang:alpine
 
-# Download helm
-RUN apk add helm
-RUN curl -sSL https://sdk.cloud.google.com | bash
-RUN gcloud auth activate-service-account --key-file=${KEY}
+# Env vars
+ARG ACCOUNT
+ARG KEY
 
-# Move to /dist directory as the place for resulting binary folder
+# Move to working directory /dist
 WORKDIR /dist
+
+# Decode key to json file
+RUN echo ${KEY} | base64 -d > /dist/auth.json
+
+# Install packages
+RUN apk update
+# RUN apk add helm
+RUN apk add bash
+RUN apk add curl
+RUN apk add python3
+# RUN apk add py3-pip
+# RUN apk add gcc musl-dev python3-dev libffi-dev openssl-dev cargo
+# RUN pip3 install cryptography
+
+# Install gcloud client
+RUN curl https://sdk.cloud.google.com > install.sh
+RUN bash install.sh --disable-prompts --install-dir=/dist
+RUN bash /dist/google-cloud-sdk/bin/gcloud auth activate-service-account ${ACCOUNT} --key-file=/dist/auth.json
 
 # Copy binary from build to main folder
 COPY --from=build /build/main .

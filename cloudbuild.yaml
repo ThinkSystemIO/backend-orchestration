@@ -8,6 +8,8 @@ steps:
       - --build-arg
       - PAT=${_PAT}
       - --build-arg
+      - ACCOUNT=${_ACCOUNT}
+      - --build-arg
       - KEY=${_KEY}
       - -t
       - us-central1-docker.pkg.dev/$PROJECT_ID/images/backend-orchestration
