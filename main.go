@@ -17,7 +17,7 @@ func main() {
 	r.Use(middleware.Logger)
 
 	r.Get("/{instance}", DeployInstance)
-	r.Get("/{instance}/{image}/{service}", DeployContainer)
+	r.Get("/{instance}/{image}", DeployContainer)
 
 	http.ListenAndServe(":80", r)
 }
@@ -36,8 +36,8 @@ func DeployInstance(w http.ResponseWriter, r *http.Request) {
 
 	backendFlowImage := "backend-flow"
 	deployBackendFlow := fmt.Sprintf(
-		"helm upgrade --install -f ./helm/deploy/values.yaml %s ./helm/deploy --set name=%s-service-%s-%s",
-		backendFlowImage, instance, "backend", backendFlowImage,
+		"helm upgrade --install -f ./helm/deploy/values.yaml %s ./helm/deploy --set name=%s-service-%s",
+		backendFlowImage, instance, backendFlowImage,
 	)
 
 	err = execCmd(deployBackendFlow)
@@ -47,8 +47,8 @@ func DeployInstance(w http.ResponseWriter, r *http.Request) {
 
 	frontendDashboardImage := "frontend-dashboard"
 	deployFrontendDashboard := fmt.Sprintf(
-		"helm upgrade --install -f ./helm/deploy/values.yaml %s ./helm/deploy --set name=%s-service-%s-%s",
-		frontendDashboardImage, instance, "frontend", frontendDashboardImage,
+		"helm upgrade --install -f ./helm/deploy/values.yaml %s ./helm/deploy --set name=%s-service-%s",
+		frontendDashboardImage, instance, frontendDashboardImage,
 	)
 
 	err = execCmd(deployFrontendDashboard)
@@ -67,7 +67,6 @@ func DeployContainer(w http.ResponseWriter, r *http.Request) {
 
 	instance := chi.URLParam(r, "instance")
 	image := chi.URLParam(r, "image")
-	service := chi.URLParam(r, "type")
 
 	err := execCmd("helm charr pull us-central1-docker.pkg.dev/${PROJECT_ID}/repo/deploy:0.1.0")
 	if err != nil {
@@ -75,8 +74,8 @@ func DeployContainer(w http.ResponseWriter, r *http.Request) {
 	}
 
 	deploy := fmt.Sprintf(
-		"helm upgrade --install -f ./helm/deploy/values.yaml %s ./helm/deploy --set name=%s-service-%s-%s",
-		image, instance, service, image,
+		"helm upgrade --install -f ./helm/deploy/values.yaml %s ./helm/deploy --set name=%s-service-%s",
+		image, instance, image,
 	)
 
 	err = execCmd(deploy)
