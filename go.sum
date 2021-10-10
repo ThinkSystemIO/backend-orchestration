@@ -1,2 +1,4 @@
 github.com/go-chi/chi v1.5.4 h1:QHdzF2szwjqVV4wmByUnTcsbIg7UGaQ0tPF2t5GcAIs=
 github.com/go-chi/chi v1.5.4/go.mod h1:uaf8YgoFazUOkPBG7fxPftUylNumIev9awIWOENIuEg=
+github.com/thinksystemio/package-response v0.0.0-20211006040923-b4c8e6d3a490 h1:97zeuaq4rrsGhY7B896d29afmjf2Ltt6yogLPpoqu7Q=
+github.com/thinksystemio/package-response v0.0.0-20211006040923-b4c8e6d3a490/go.mod h1:QrM3WQfpa2b2lqTVarbOtDuLcDo17orzZH6R+f7sQAY=
