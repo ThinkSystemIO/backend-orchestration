@@ -16,10 +16,25 @@ func main() {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 
-	r.Get("/{instance}", DeployInstance)
-	r.Get("/{instance}/{image}", DeployContainer)
+	r.Get("/", Echo)
+	r.Get("/*", NotFound)
+
+	r.Get("api/{instance}", DeployInstance)
+	r.Get("api/{instance}/{image}", DeployContainer)
 
 	http.ListenAndServe(":80", r)
+}
+
+// Echo allows pinging of this service
+func Echo(w http.ResponseWriter, r *http.Request) {
+	res := response.CreateResponse()
+	res.SendDataWithStatusCode(w, "echo", http.StatusOK)
+}
+
+// NotFound redirects to the not found page
+func NotFound(w http.ResponseWriter, r *http.Request) {
+	res := response.CreateResponse()
+	res.SendDataWithStatusCode(w, "not found", http.StatusNotFound)
 }
 
 // DeployInstance initializes a new set of containers for
