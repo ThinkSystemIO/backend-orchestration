@@ -51,7 +51,7 @@ func DeployInstance(w http.ResponseWriter, r *http.Request) {
 
 	backendFlowImage := "backend-flow"
 	deployBackendFlow := fmt.Sprintf(
-		"helm upgrade --install -f ./helm/deploy/values.yaml %s ./helm/deploy --set name=%s-service-%s",
+		"helm upgrade --install -f /dist/helm/deploy/values.yaml %s /dist/helm/deploy --set name=%s-service-%s",
 		backendFlowImage, instance, backendFlowImage,
 	)
 
@@ -62,7 +62,7 @@ func DeployInstance(w http.ResponseWriter, r *http.Request) {
 
 	frontendDashboardImage := "frontend-dashboard"
 	deployFrontendDashboard := fmt.Sprintf(
-		"helm upgrade --install -f ./helm/deploy/values.yaml %s ./helm/deploy --set name=%s-service-%s",
+		"helm upgrade --install -f /dist/helm/deploy/values.yaml %s /dist/helm/deploy --set name=%s-service-%s",
 		frontendDashboardImage, instance, frontendDashboardImage,
 	)
 
@@ -89,7 +89,7 @@ func DeployContainer(w http.ResponseWriter, r *http.Request) {
 	}
 
 	deploy := fmt.Sprintf(
-		"helm upgrade --install -f ./helm/deploy/values.yaml %s ./helm/deploy --set name=%s-service-%s",
+		"helm upgrade --install -f /dist/helm/deploy/values.yaml %s /dist/helm/deploy --set name=%s-service-%s",
 		image, instance, image,
 	)
 
