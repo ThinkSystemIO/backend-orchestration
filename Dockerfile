@@ -37,7 +37,7 @@ ARG KEY
 
 # Move to working directory /dist
 WORKDIR /dist
-COPY helm /dist
+COPY helm /dist/helm
 
 # Decode key to json file
 RUN echo ${KEY} | base64 -d > /dist/auth.json
