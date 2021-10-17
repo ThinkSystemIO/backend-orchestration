@@ -1,15 +1,15 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: deployment-{{ .Values.name }}
+  name: {{ .Values.name }}-deployment
 spec:
   selector:
     matchLabels:
-      app: pod-{{ .Values.name }}
+      app: {{ .Values.name }}-pod
   template:
     metadata:
       labels:
-        app: pod-{{ .Values.name }}
+        app: {{ .Values.name }}-pod
     spec:
       containers:
         - name: {{ .Values.name }}
@@ -25,10 +25,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: service-{{ .Values.name }}
+  name: {{ .Values.name }}-service
 spec:
   selector:
-    app: pod-{{ .Values.name }}
+    app: {{ .Values.name }}-pod
   ports:
     - port: 80
       targetPort: 80
