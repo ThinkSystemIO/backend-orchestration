@@ -41,7 +41,6 @@ WORKDIR /dist
 # Decode key to json file
 RUN echo ${KEY} | base64 -d > /dist/auth.json
 
-
 # Update packages
 RUN apk update
 

@@ -19,8 +19,8 @@ func main() {
 	r.Get("/", Echo)
 	r.Get("/*", NotFound)
 
-	r.Get("api/{instance}", DeployInstance)
-	r.Get("api/{instance}/{image}", DeployContainer)
+	r.Get("/api/{instance}", DeployInstance)
+	r.Get("/api/{instance}/{image}", DeployContainer)
 
 	http.ListenAndServe(":80", r)
 }
