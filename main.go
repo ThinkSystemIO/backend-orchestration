@@ -44,31 +44,18 @@ func DeployInstance(w http.ResponseWriter, r *http.Request) {
 
 	instance := chi.URLParam(r, "instance")
 
-	err := execCmd("helm chart pull us-central1-docker.pkg.dev/${PROJECT_ID}/repo/deploy:0.1.0")
-	if err != nil {
-		res.SendErrorWithStatusCode(w, err, http.StatusInternalServerError)
-	}
-
 	backendFlowImage := "backend-flow"
-	deployBackendFlow := fmt.Sprintf(
-		"helm upgrade --install -f /dist/helm/deploy/values.yaml %s-%s /dist/helm/deploy --set instance=%s --set image=%s",
-		instance, backendFlowImage, instance, backendFlowImage,
-	)
-
-	err = execCmd(deployBackendFlow)
-	if err != nil {
-		res.SendErrorWithStatusCode(w, err, http.StatusInternalServerError)
+	deployBackendFlow := formatHelmDeployCommand(instance, backendFlowImage)
+	backedFlowErr := execCmd(deployBackendFlow)
+	if backedFlowErr != nil {
+		res.SendErrorWithStatusCode(w, backedFlowErr, http.StatusInternalServerError)
 	}
 
 	frontendDashboardImage := "frontend-dashboard"
-	deployFrontendDashboard := fmt.Sprintf(
-		"helm upgrade --install -f /dist/helm/deploy/values.yaml %s-%s /dist/helm/deploy --set instance=%s --set image=%s",
-		instance, frontendDashboardImage, instance, frontendDashboardImage,
-	)
-
-	err = execCmd(deployFrontendDashboard)
-	if err != nil {
-		res.SendErrorWithStatusCode(w, err, http.StatusInternalServerError)
+	deployFrontendDashboard := formatHelmDeployCommand(instance, frontendDashboardImage)
+	frontendDashboardErr := execCmd(deployFrontendDashboard)
+	if frontendDashboardErr != nil {
+		res.SendErrorWithStatusCode(w, frontendDashboardErr, http.StatusInternalServerError)
 	}
 
 	res.SendDataWithStatusCode(w, "successfully deployed instance", http.StatusOK)
@@ -83,17 +70,8 @@ func DeployContainer(w http.ResponseWriter, r *http.Request) {
 	instance := chi.URLParam(r, "instance")
 	image := chi.URLParam(r, "image")
 
-	err := execCmd("helm chart pull us-central1-docker.pkg.dev/${PROJECT_ID}/repo/deploy:0.1.0")
-	if err != nil {
-		res.SendErrorWithStatusCode(w, err, http.StatusInternalServerError)
-	}
-
-	deploy := fmt.Sprintf(
-		"helm upgrade --install -f /dist/helm/deploy/values.yaml %s-%s /dist/helm/deploy --set instance=%s --set image=%s",
-		instance, image, instance, image,
-	)
-
-	err = execCmd(deploy)
+	deploy := formatHelmDeployCommand(instance, image)
+	err := execCmd(deploy)
 	if err != nil {
 		res.SendErrorWithStatusCode(w, err, http.StatusInternalServerError)
 	}
@@ -110,4 +88,11 @@ func execCmd(command string) error {
 
 	fmt.Printf("%s\n", stdoutStderr)
 	return err
+}
+
+func formatHelmDeployCommand(instance string, image string) string {
+	return fmt.Sprintf(
+		"helm upgrade --install -f /dist/helm/deploy/values.yaml %s-%s /dist/helm/deploy --set instance=%s --set image=%s",
+		instance, image, instance, image,
+	)
 }
