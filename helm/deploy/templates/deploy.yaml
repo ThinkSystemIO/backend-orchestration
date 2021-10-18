@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.instance}}-{{ .Values.image }}
+  name: {{ .Values.instance }}-{{ .Values.image }}
 spec:
   selector:
     matchLabels:
-      app: {{ .Values.instance}}-{{ .Values.image }}
+      app: {{ .Values.instance }}-{{ .Values.image }}
   template:
     metadata:
       labels:
-        app: {{ .Values.instance}}-{{ .Values.image }}
+        app: {{ .Values.instance }}-{{ .Values.image }}
     spec:
       containers:
-        - name: {{ .Values.instance}}-{{ .Values.image }}
+        - name: {{ .Values.instance }}-{{ .Values.image }}
           image: us-central1-docker.pkg.dev/thinksystemio/images/{{ .Values.image }}
           imagePullPolicy: Always
           ports:
@@ -25,10 +25,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.instance}}-{{ .Values.image }}
+  name: {{ .Values.instance }}-{{ .Values.image }}
 spec:
   selector:
-    app: {{ .Values.instance}}-{{ .Values.image }}
+    app: {{ .Values.instance }}-{{ .Values.image }}
   ports:
     - port: 80
       targetPort: 80
